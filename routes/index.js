@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var Task = require('../models/task.js');
+var Task = require('../models/task.js'); // grabs schema from the task.js;no more db.collection
 
 /* GET home page. */
 /* GET home page, a list of incomplete tasks . */
 router.get('/', function(req, res, next) {
-
+    // Task talks to the database
     Task.find({completed:false}, function(err, tasks){
         if (err) {
             return next(err);
@@ -13,9 +13,6 @@ router.get('/', function(req, res, next) {
         res.render('index', { title: 'TODO list' , tasks: tasks });
     });
 });
-
-
-
 /* POST Add new task, then redirect to task list */
 router.post('/add', function(req, res, next){
 
@@ -27,7 +24,7 @@ router.post('/add', function(req, res, next){
     else {
         // Save new task with text provided, and completed = false
         var task = Task({ text : req.body.text, completed: false});
-
+        //
         task.save(function(err) {
             if (err) {
                 return next(err);
@@ -41,6 +38,7 @@ router.post('/add', function(req, res, next){
 router.post('/done', function (req, res,next)
 {
     var id = req.body._id;
+    //mongoose command to find one item
     Task.findByIdAndUpdate(id, { completed: true},function (err, task) {
             if(err){
                 return next(err);
@@ -56,8 +54,9 @@ router.post('/done', function (req, res,next)
     })
 
 });
-
-router.get('/completed', function (req, res,next ) {
+// router grabs the complated task from the mongoose database
+router.get('/completed', function (req, res,next )
+{
     Task.find({completed:true},function(err, tasks) {
         if (err) {
             return next(err);
@@ -66,6 +65,7 @@ router.get('/completed', function (req, res,next ) {
     })
     
 });
+// grabs the id and send it to db to delete.
 router.post('/delete', function(req, res,next){
     var id = req.body._id;
    Task.findByIdAndRemove(id, function(err,task){

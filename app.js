@@ -18,6 +18,7 @@ app.set('view engine', 'hbs');
 
 var mongo_pw = process.env.MONGO_PW;
 var url = 'mongodb://localhost:27017/todo';
+//to do for me.
 //var url = 'mongodb://chitrakakkar:' + mongo_pw + '@localhost:27017/todo?authSource=admin';
 mongoose.connect(url);    //That's all!
 
