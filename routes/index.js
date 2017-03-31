@@ -15,24 +15,27 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/add', function (req, res, next)
-{
-    if(!req.body || !req.body.text){
+
+/* POST Add new task, then redirect to task list */
+router.post('/add', function(req, res, next){
+
+    if (!req.body || !req.body.text) {
         req.flash('error', 'Please enter some text');
         res.redirect('/');
     }
+
     else {
         // Save new task with text provided, and completed = false
-        var task = {text: req.body.text, completed: false};
-        req.task_col.insertOne(task, function (err)
+        var task = Task({ text : req.body.text, completed: false});
 
-        {
+        task.save(function(err) {
             if (err) {
-                return next(err)
+                return next(err);
             }
-            res.redirect('/');
-        })
+            return res.redirect('/')
+        });
     }
+
 });
 // ids have to be an objectid object
 router.post('/done', function (req, res,next)
@@ -64,7 +67,7 @@ router.get('/completed', function (req, res,next ) {
     
 });
 router.post('/delete', function(req, res,next){
-
+    var id = req.body._id;
    Task.findByIdAndRemove(id, function(err,task){
 
         if (err) {
